@@ -125,7 +125,7 @@ describe('Add Modal', () => {
     expect(wrapper.find('[data-test-id="modal-title"]')).toHaveLength(0);
   });
 
-  it.only('Display placeholder field', async () => {
+  it('Display placeholder field', async () => {
     const wrapper = await renderComponent();
 
     const fieldGroup = wrapper.find('FieldGroup');
@@ -135,23 +135,21 @@ describe('Add Modal', () => {
     const methodGroup = fieldGroup.at(0).find('Field');
     expect(methodGroup).toHaveLength(1);
 
-    const methodField = methodGroup.find('SelectField');
+    const methodField = methodGroup
+      .find('SelectField')
+      .at(0)
+      .find('input')
+      .at(1);
+    methodField.simulate('keyDown', {key: 'ArrowDown'});
 
-    openMenu(wrapper, {selector: 'SelectControl'});
+    const methodFieldMenu = wrapper
+      .find('FieldGroup')
+      .at(0)
+      .find('Field')
+      .find('SelectField')
+      .at(0);
 
-    debugger;
-
-    //openMenu(methodField);
-
-    //methodField.simulate('click');
-
-    // @ts-ignore
-    await tick();
-    wrapper.update();
-
-    debugger;
-
-    const methodFieldOptions = methodField.find('MenuList Option Wrapper');
+    const methodFieldOptions = methodFieldMenu.find('MenuList Option Wrapper');
     expect(methodFieldOptions).toHaveLength(4);
     const replaceOption = methodFieldOptions.at(3);
 
@@ -161,6 +159,8 @@ describe('Add Modal', () => {
     );
 
     replaceOption.simulate('click');
+
+    wrapper.update();
 
     expect(
       wrapper
@@ -186,7 +186,5 @@ describe('Add Modal', () => {
       placeholderFieldHelp
     );
     expect(placeholderField.find('Tooltip').prop('title')).toEqual(placeholderFieldHelp);
-
-    debugger;
   });
 });
