@@ -135,38 +135,30 @@ describe('Add Modal', () => {
     const methodGroup = fieldGroup.at(0).find('Field');
     expect(methodGroup).toHaveLength(1);
 
-    const methodField = methodGroup
-      .find('SelectField')
-      .at(0)
-      .find('input')
-      .at(1);
-    methodField.simulate('keyDown', {key: 'ArrowDown'});
+    const methodField = methodGroup.find('[data-test-id="method-field"]');
 
-    const methodFieldMenu = wrapper
-      .find('FieldGroup')
-      .at(0)
-      .find('Field')
-      .find('SelectField')
-      .at(0);
+    const methodFieldInput = methodField.find('input').at(1);
+    methodFieldInput.simulate('keyDown', {key: 'ArrowDown'});
 
-    const methodFieldOptions = methodFieldMenu.find('MenuList Option Wrapper');
-    expect(methodFieldOptions).toHaveLength(4);
-    const replaceOption = methodFieldOptions.at(3);
+    const methodFieldMenuOptions = wrapper.find(
+      '[data-test-id="method-field"] MenuList Option Wrapper'
+    );
+    expect(methodFieldMenuOptions).toHaveLength(4);
+    const replaceOption = methodFieldMenuOptions.at(3);
 
     expect(replaceOption.find('[data-test-id="label"]').text()).toEqual('Replace');
     expect(replaceOption.find('Description').text()).toEqual(
       '(Replace with Placeholder)'
     );
 
+    // After the click the placeholder field MUST be in the DOM
     replaceOption.simulate('click');
-
     wrapper.update();
 
     expect(
       wrapper
-        .find('FieldGroup')
-        .at(0)
-        .find('SelectField')
+        .find('[data-test-id="method-field"] input')
+        .at(1)
         .prop('value')
     ).toEqual(MethodType.REPLACE);
 
@@ -186,5 +178,116 @@ describe('Add Modal', () => {
       placeholderFieldHelp
     );
     expect(placeholderField.find('Tooltip').prop('title')).toEqual(placeholderFieldHelp);
+
+    // After the click the placeholder field MUST NOT be in the DOM
+
+    wrapper
+      .find('[data-test-id="method-field"]')
+      .find('input')
+      .at(1)
+      .simulate('keyDown', {key: 'ArrowDown'});
+
+    const hashOption = wrapper
+      .find('[data-test-id="method-field"] MenuList Option Wrapper')
+      .at(0);
+
+    hashOption.simulate('click');
+
+    expect(
+      wrapper
+        .find('[data-test-id="method-field"] input')
+        .at(1)
+        .prop('value')
+    ).toBe(MethodType.HASH);
+
+    expect(
+      wrapper
+        .find('FieldGroup')
+        .at(0)
+        .find('Field')
+    ).toHaveLength(1);
+  });
+
+  it.only('Display regex field', async () => {
+    const wrapper = await renderComponent();
+
+    const fieldGroup = wrapper.find('FieldGroup');
+    expect(fieldGroup).toHaveLength(2);
+
+    // Type Field
+    const methodGroup = fieldGroup.at(0).find('Field');
+    expect(methodGroup).toHaveLength(1);
+
+    const methodField = methodGroup.find('[data-test-id="method-field"]');
+
+    const methodFieldInput = methodField.find('input').at(1);
+    methodFieldInput.simulate('keyDown', {key: 'ArrowDown'});
+
+    const methodFieldMenuOptions = wrapper.find(
+      '[data-test-id="method-field"] MenuList Option Wrapper'
+    );
+    expect(methodFieldMenuOptions).toHaveLength(4);
+    const replaceOption = methodFieldMenuOptions.at(3);
+
+    expect(replaceOption.find('[data-test-id="label"]').text()).toEqual('Replace');
+    expect(replaceOption.find('Description').text()).toEqual(
+      '(Replace with Placeholder)'
+    );
+
+    // After the click the placeholder field MUST be in the DOM
+    replaceOption.simulate('click');
+    wrapper.update();
+
+    expect(
+      wrapper
+        .find('[data-test-id="method-field"] input')
+        .at(1)
+        .prop('value')
+    ).toEqual(MethodType.REPLACE);
+
+    const updatedMethodGroup = wrapper
+      .find('FieldGroup')
+      .at(0)
+      .find('Field');
+
+    expect(updatedMethodGroup).toHaveLength(2);
+
+    const placeholderField = updatedMethodGroup.at(1);
+    expect(placeholderField.find('FieldLabel').text()).toEqual(
+      'Custom Placeholder (Optional)'
+    );
+    const placeholderFieldHelp = 'It will replace the default placeholder [Filtered]';
+    expect(placeholderField.find('QuestionTooltip').prop('title')).toEqual(
+      placeholderFieldHelp
+    );
+    expect(placeholderField.find('Tooltip').prop('title')).toEqual(placeholderFieldHelp);
+
+    // After the click the placeholder field MUST NOT be in the DOM
+
+    wrapper
+      .find('[data-test-id="method-field"]')
+      .find('input')
+      .at(1)
+      .simulate('keyDown', {key: 'ArrowDown'});
+
+    const hashOption = wrapper
+      .find('[data-test-id="method-field"] MenuList Option Wrapper')
+      .at(0);
+
+    hashOption.simulate('click');
+
+    expect(
+      wrapper
+        .find('[data-test-id="method-field"] input')
+        .at(1)
+        .prop('value')
+    ).toBe(MethodType.HASH);
+
+    expect(
+      wrapper
+        .find('FieldGroup')
+        .at(0)
+        .find('Field')
+    ).toHaveLength(1);
   });
 });

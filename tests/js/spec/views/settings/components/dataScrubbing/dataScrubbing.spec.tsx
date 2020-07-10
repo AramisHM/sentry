@@ -355,7 +355,6 @@ describe('Data Scrubbing', () => {
       cancelButton.simulate('click');
 
       expect(wrapper.find('[data-test-id="edit-rule-modal"]')).toHaveLength(0);
-      expect(updatedMethodGroup.at(1).find);
     });
   });
 });

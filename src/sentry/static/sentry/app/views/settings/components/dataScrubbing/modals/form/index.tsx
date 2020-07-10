@@ -68,6 +68,7 @@ class Form extends React.Component<Props<Values, KeysOfUnion<Values>>, State> {
       <React.Fragment>
         <FieldGroup hasTwoColumns={values.method === MethodType.REPLACE}>
           <Field
+            data-test-id="method-field"
             label={t('Method')}
             help={t('What to do')}
             inline={false}
@@ -107,6 +108,7 @@ class Form extends React.Component<Props<Values, KeysOfUnion<Values>>, State> {
         </FieldGroup>
         <FieldGroup hasTwoColumns={values.type === RuleType.PATTERN}>
           <Field
+            data-test-id="type-field"
             label={t('Data Type')}
             help={t(
               'What to look for. Use an existing pattern or define your own using regular expressions.'
